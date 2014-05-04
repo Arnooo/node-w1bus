@@ -1,0 +1,42 @@
+{
+    "author": {
+    	"name": "Arnaud Joubel",
+    	"email": "arnaud.joubel@gmail.com"
+  	},
+  	"name": "node-w1bus",
+    "version": "0.1.0",
+    "dependencies": {
+        "ds18b20": "*",
+        "q":">=1.0.1"
+    },
+    "description": "1-Wire Bus module can be use to get values from different sensors/probes managed on the 1-Wire bus",
+	"main": "./w1bus",
+	"tags": [
+	    "raspberry",
+	    "pi",
+	    "monitoring",
+	    "temperature",
+	    "probe",
+        "sensor",
+        "1-Wire"
+	],
+    "licenses": [
+      {
+        "type": "MIT",
+        "url": "https://github.com/Arnooo/node-w1bus/blob/master/LICENSE"
+      }
+    ], 
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:Arnooo/node-w1bus.git"
+    },  
+    "bugs": {
+        "url": "https://github.com/Arnooo/node-w1bus/issues"
+    },
+    "scripts": {
+      "test": "make test"
+    },
+    "devDependencies": {
+        "mocha": ">= 1.18.2"
+    }
+}
