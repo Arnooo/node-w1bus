@@ -81,7 +81,6 @@ W1bus.prototype.listAllSensors = function() {
   			deferred.resolve(err, ids);
 		}
 		else{
-			console.error(err);
       		deferred.reject(err);
 		}
 	});

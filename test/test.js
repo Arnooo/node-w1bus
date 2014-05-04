@@ -1,6 +1,9 @@
 var assert = require("assert"),
     w1bus = require("../w1bus");
 
+//--------------------------------------------------------------------------------
+// test cases - testing for success
+//
 describe('W1bus', function(){
   describe('#create()', function(){
     it('should return an object!', function(){
@@ -9,19 +12,39 @@ describe('W1bus', function(){
   });
 });
 
+//--------------------------------------------------------------------------------
+// test cases - testing for failure
+//
 describe('W1bus', function(){
   describe('#listAllSensors()', function(){
-    it('should return a list of all sensors! Check sensors connection!', function(done){
+    it('should return an error because no sensor/probe are connected!', function(){
         var bus = w1bus.create();
         bus.listAllSensors()
         .then(function(err, data){
-            if(err){
-                throw err;
-            }
-            console.log(err);
-            console.log(data);
-            done();
+            assert.equal(34, err.errno);
+        })
+        .catch(function(){
+            assert.equal(34, err.errno);
+            assert.equal(undefined, data);
         });
     });
   });
 });
+
+describe('W1bus', function(){
+  describe('#getValueFrom()', function(){
+    it('should return an error because no sensor/probe are connected!', function(){
+        var bus = w1bus.create();
+        var sensorID = 28;
+        bus.getValueFrom(sensorID)
+        .then(function(err, data){
+            assert.equal(34, err.errno);
+        })
+        .catch(function(){
+            assert.equal(34, err.errno);
+            assert.equal(undefined, data);
+        });
+    });
+  });
+});
+
