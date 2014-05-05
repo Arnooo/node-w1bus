@@ -46,17 +46,16 @@ function W1bus () {
  * @param {Object} sensor ID
  * @api private
  */
-W1bus.prototype.getValueFrom = function(sensorID, processValue) {
+W1bus.prototype.getValueFrom = function(sensorID) {
 	var self=this;
     var deferred = Q.defer(); 
-	sense.temperature('28-000005866d48', function(err, value) {
+	sense.temperature(sensorID, function(err, value) {
 		if(!err && value){
-		 	console.log('Current temperature is', value);
 		 	var result = {
 		 		timestamp: Date.now(),
 		 		value: value
 		 	};
-  			deferred.resolve(err, result);
+  			deferred.resolve({err:err, result:result});
 		}
 		else{
 			deferred.reject(err);
@@ -77,8 +76,7 @@ W1bus.prototype.listAllSensors = function() {
 	sense.sensors(function(err, ids) {
 		if(!err){
 			self.sensors_=ids;
-	  		console.log(ids);
-  			deferred.resolve(err, ids);
+  			deferred.resolve({err:err, ids:ids});
 		}
 		else{
       		deferred.reject(err);
