@@ -35,7 +35,7 @@ describe('W1bus', function(){
   describe('#getValueFrom()', function(){
     it('should return an error because no sensor/probe are connected!', function(){
         var bus = w1bus.create();
-        var sensorID = 28;
+        var sensorID = "28-000";
         bus.getValueFrom(sensorID)
         .then(function(err, data){
             assert.equal(34, err.errno);
