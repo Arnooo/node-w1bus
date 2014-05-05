@@ -9,15 +9,25 @@ Simple node module to manage all sensor on 1-Wire bus
 
 ## Usage
 
-    TODO
+    var bus = w1bus.create();
+    bus.listAllSensors()
+    .then(function(data){
+        console.log(data);
+        bus.getValueFrom(data.ids[0])
+        .then(function(res){
+            console.log(res);
+        });
+    });
 
 ## Tests
 
-In order to perform unit test you should have some sensor connected
+In order to perform unit test without any sensors/probes, run:
 
-To perform unit test, use:
+  make test
 
-  mocha
+If you want to perform unit test with real sensors/probes conencted, run:
+
+    make live
 
 ## Contributing
 
