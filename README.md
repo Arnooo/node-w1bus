@@ -23,7 +23,7 @@ Simple node module to manage all sensor on 1-Wire bus
 
 In order to perform unit test without any sensors/probes, run:
 
-  make test
+    make test
 
 If you want to perform unit test with real sensors/probes conencted, run:
 

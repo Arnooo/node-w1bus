@@ -7,8 +7,8 @@
  /**
  * Module dependencies.
  */
-var sense = require('ds18b20'),
-    Q = require('q');
+var Q = require('q'),
+	fs = require('fs');
 
 /**
  * Version.
@@ -49,16 +49,22 @@ function W1bus () {
 W1bus.prototype.getValueFrom = function(sensorID) {
 	var self=this;
     var deferred = Q.defer(); 
-	sense.temperature(sensorID, function(err, value) {
-		if(!err && value){
-		 	var result = {
-		 		timestamp: Date.now(),
-		 		value: value
-		 	};
-  			deferred.resolve({err:err, result:result});
-		}
-		else{
+    fs.readFile('/sys/bus/w1/devices/' + sensorID + '/w1_slave', 'utf8', function (err, data) {
+		if (err) {
 			deferred.reject(err);
+		} else {
+			var output = data.match(/t=(\d+)/);
+			if (output) {
+				var value = output[1] / 1000;	
+			 	var result = {
+			 		timestamp: Date.now(),
+			 		value: value
+			 	};
+	  			deferred.resolve({err:null, result:result});
+			}
+			else{
+				deferred.reject(new Error('Can not read temperature for sensor ' + sensorID));
+			}
 		}
 	});
     return deferred.promise;
@@ -73,13 +79,13 @@ W1bus.prototype.getValueFrom = function(sensorID) {
 W1bus.prototype.listAllSensors = function() {
 	var self=this;
     var deferred = Q.defer(); 
-	sense.sensors(function(err, ids) {
-		if(!err){
-			self.sensors_=ids;
-  			deferred.resolve({err:err, ids:ids});
-		}
-		else{
+    fs.readFile('/sys/bus/w1/devices/w1_bus_master1/w1_master_slaves', 'utf8', function (err, data) {
+		if (err) {
       		deferred.reject(err);
+		} else {
+			var parts = data.split("\n");
+			parts.pop();
+  			deferred.resolve({err:null, ids:parts});
 		}
 	});
     return deferred.promise;

@@ -6,7 +6,6 @@
   	"name": "node-w1bus",
     "version": "0.1.0",
     "dependencies": {
-        "ds18b20": "*",
         "q":">=1.0.1"
     },
     "description": "1-Wire Bus module can be use to get values from different sensors/probes managed on the 1-Wire bus",
