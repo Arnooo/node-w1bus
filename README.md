@@ -19,6 +19,14 @@ Simple node module to manage all sensor on 1-Wire bus
         });
     });
 
+## Compatibilities
+
+1 Wire sensors compatibilities (Description translated from http://fr.wikipedia.org/wiki/1-Wire):
+
+    DS18S20 - Thermometer
+    DS1822 - Digital thermometer
+    DS18B20 - Temperature sensor with adjustable resolution
+
 ## Tests
 
 In order to perform unit test without any sensors/probes, run:
@@ -36,4 +44,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
 
-* 0.0.0
+* 0.1.0 Initial release

@@ -51,7 +51,9 @@ describe('W1bus', function(){
                 .then(function(res){
                     try{
                         assert.equal(null, res.err);
+                        assert.ok(!isNaN(res.result.value));
                         assert.equal(typeof(1), typeof(res.result.value));
+                        assert.ok(!isNaN(res.result.timestamp));
                         assert.equal(typeof(1), typeof(res.result.timestamp));
                         assert.ok(res.result.timestamp > 0);
 

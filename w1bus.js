@@ -25,8 +25,24 @@ exports.create = function() {
     return new W1bus();
 };
 
+
+/**
+ * 1 Wire family 
+ * Description are translated from http://fr.wikipedia.org/wiki/1-Wire
+ */
 var w1BusFamily = {
-	28:"Temperature sensor"
+	10: { 
+		description: "Thermometer",
+		pattern: /t=(\d+)/
+	},
+	22: { 
+		description: "Digital thermometer",
+		pattern: /t=(\d+)/
+	},
+	28: { 
+		description: "Temperature sensor with adjustable resolution",
+		pattern: /t=(\d+)/
+	}
 };
 
 /**
@@ -49,11 +65,13 @@ function W1bus () {
 W1bus.prototype.getValueFrom = function(sensorID) {
 	var self=this;
     var deferred = Q.defer(); 
+	var matchArray = sensorID.match(/(\d+)-/);
+	var family = matchArray[1];
     fs.readFile('/sys/bus/w1/devices/' + sensorID + '/w1_slave', 'utf8', function (err, data) {
 		if (err) {
 			deferred.reject(err);
 		} else {
-			var output = data.match(/t=(\d+)/);
+			var output = w1BusFamily[family].pattern.exec(data);
 			if (output) {
 				var value = output[1] / 1000;	
 			 	var result = {
