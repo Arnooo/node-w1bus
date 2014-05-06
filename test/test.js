@@ -2,7 +2,7 @@ var assert = require("assert"),
     w1bus = require("../w1bus");
 
 //--------------------------------------------------------------------------------
-// test cases - testing for success
+// test cases - testing common API between simulation and live
 //
 describe('W1bus', function(){
   describe('#create()', function(){
@@ -12,39 +12,50 @@ describe('W1bus', function(){
   });
 });
 
-//--------------------------------------------------------------------------------
-// test cases - testing for failure
-//
 describe('W1bus', function(){
-  describe('#listAllSensors()', function(){
-    it('should return an error because no sensor/probe are connected!', function(){
-        var bus = w1bus.create();
-        bus.listAllSensors()
-        .then(function(err, data){
-            assert.equal(34, err.errno);
-        })
-        .catch(function(){
-            assert.equal(34, err.errno);
-            assert.equal(undefined, data);
-        });
+  describe('#getConfig()', function(){
+    it('should return a config matching\n'+    
+        'var config = {\n'+
+        '  sensor_id: {\n'+
+        '    description: \"desc\",\n'+
+        '    measures: {\n'+
+        '      temperature: {\n'+
+        '        description: \"Temperature measure\",\n'+
+        '        pattern: /t=(\d+)/,\n'+
+        '        unit: \"°C\",\n'+
+        '        scale: 0.001\n'+
+        '      }\n'+
+        '    }\n'+
+        '  }\n'+
+        '}!',
+    function(){
+      var bus = w1bus.create();
+      var config = bus.getConfig();
+      for(var sensor in config){
+        console.log("Sensor ID = "+sensor);
+        for(var param1 in config[sensor]){
+            assert.ok((param1 === "description" ||
+                      param1 === "measures"),
+                       "Unknown sensor parameter: "+param1);
+        }
+        assert.ok(config[sensor].measures);
+        for(var meas in config[sensor].measures){
+          for(var param2 in config[sensor].measures[meas]){
+              assert.ok((param2 === "description" ||
+                        param2 === "pattern" ||
+                        param2 === "unit" ||
+                        param2 === "scale"),
+                         "Unknown measure parameter: "+param2);
+          }
+          console.log("Measure = "+meas);
+          assert.ok(config[sensor].measures[meas].description);
+          assert.ok(config[sensor].measures[meas].pattern);
+          assert.ok(config[sensor].measures[meas].unit);
+          assert.ok(config[sensor].measures[meas].scale);
+        }
+      }
     });
   });
 });
 
-describe('W1bus', function(){
-  describe('#getValueFrom()', function(){
-    it('should return an error because no sensor/probe are connected!', function(){
-        var bus = w1bus.create();
-        var sensorID = "28-000";
-        bus.getValueFrom(sensorID)
-        .then(function(err, data){
-            assert.equal(34, err.errno);
-        })
-        .catch(function(){
-            assert.equal(34, err.errno);
-            assert.equal(undefined, data);
-        });
-    });
-  });
-});
 

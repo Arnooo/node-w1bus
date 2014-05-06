@@ -26,64 +26,101 @@ exports.create = function() {
 };
 
 
-/**
- * 1 Wire family 
- * Description are translated from http://fr.wikipedia.org/wiki/1-Wire
- */
-var w1BusFamily = {
-	10: { 
-		description: "Thermometer",
-		pattern: /t=(\d+)/
-	},
-	22: { 
-		description: "Digital thermometer",
-		pattern: /t=(\d+)/
-	},
-	28: { 
-		description: "Temperature sensor with adjustable resolution",
-		pattern: /t=(\d+)/
-	}
-};
+
 
 /**
  * W1bus constructor.
  *
- * @api private
+ * @api public
  */
 function W1bus () {
 	var self=this;
 	self.sensors_=null;
+	/**
+	 * 1 Wire family 
+	 * Description are translated from http://fr.wikipedia.org/wiki/1-Wire
+	 *
+	 var config = {
+		sensor_id: {
+			description: "desc",
+			measures: {
+				measure_type: {
+					description: "Measure description",
+					pattern: /value=(\d+)/,
+					unit: "°C",
+					scale: 0.001
+				}
+			}
+		}
+	 }
+	 */
+	self.w1BusFamily_ = {
+		10: { 
+			description: "Thermometer",
+			measures:{
+				temperature: {
+					description: "Temperature",
+					pattern: /t=(\d+)/,
+					unit:"°C",
+					scale: 0.001
+				}
+			}
+		},
+		22: { 
+			description: "Digital thermometer",
+			measures:{
+				temperature: {
+					description: "Temperature",
+					pattern: /t=(\d+)/,
+					unit:"°C",
+					scale: 0.001
+				}
+			}
+		},
+		28: { 
+			description: "Temperature sensor with adjustable resolution",
+			measures:{
+				temperature: {
+					description: "Temperature",
+					pattern: /t=(\d+)/,
+					unit:"°C",
+					scale: 0.001
+				}
+			}
+		}
+	};
 };
 
 /**
- * Get value from sensor
- * Return a promise (result{timestamp, value})
+ * Return module config used by node-monitoring module
+ *
+ * @api public
+ */
+W1bus.prototype.getConfig = function() {
+	var self=this;
+	return self.w1BusFamily_;
+};
+
+/**
+ *	Check if given sensors id is connected/available
  *
  * @param {Object} sensor ID
- * @api private
+ * @api public
  */
-W1bus.prototype.getValueFrom = function(sensorID) {
+W1bus.prototype.isConnected = function(sensorID) {
 	var self=this;
     var deferred = Q.defer(); 
-	var matchArray = sensorID.match(/(\d+)-/);
-	var family = matchArray[1];
-    fs.readFile('/sys/bus/w1/devices/' + sensorID + '/w1_slave', 'utf8', function (err, data) {
-		if (err) {
-			deferred.reject(err);
-		} else {
-			var output = w1BusFamily[family].pattern.exec(data);
-			if (output) {
-				var value = output[1] / 1000;	
-			 	var result = {
-			 		timestamp: Date.now(),
-			 		value: value
-			 	};
-	  			deferred.resolve({err:null, result:result});
-			}
-			else{
-				deferred.reject(new Error('Can not read temperature for sensor ' + sensorID));
-			}
-		}
+	self.getValueFrom(sensorID)
+	.then(function(data){
+		if(!isNaN(data.result.value)){
+  			deferred.resolve({err:null, connected:true});
+  		}
+  		else{
+			deferred.reject({err:new Error("Sensor "+sensorID+" not connected!"), connected:false});
+  		}
+	})
+	.catch(function(err){
+		deferred.reject(err);
 	});
     return deferred.promise;
 };
@@ -92,7 +129,7 @@ W1bus.prototype.getValueFrom = function(sensorID) {
  * List all sensors available one the 1 wire bus
  * Return a promise (idsList)
  *
- * @api private
+ * @api public
  */
 W1bus.prototype.listAllSensors = function() {
 	var self=this;
@@ -110,12 +147,46 @@ W1bus.prototype.listAllSensors = function() {
 };
 
 /**
- *	Check if given sensors id is connected/available
+ * Get value from sensor
+ * Return a promise (result{timestamp, value})
  *
  * @param {Object} sensor ID
- * @api private
+ * @param {Object} optional measure type, such as 'temperature'
+ * @api public
  */
-W1bus.prototype.isConnected = function(sensorID) {
-	return true;
+W1bus.prototype.getValueFrom = function(sensorID, opt_measureType) {
+	var self=this;
+    var deferred = Q.defer(); 
+	var matchArray = sensorID.match(/(\d+)-/);
+	var family = matchArray[1];
+    fs.readFile('/sys/bus/w1/devices/' + sensorID + '/w1_slave', 'utf8', function (err, data) {
+		if (err) {
+			deferred.reject(err);
+		} else {
+			var output = undefined;
+			var measureType = opt_measureType;
+			if(!measureType){
+				for (var firstType in self.w1BusFamily_[family].measures) break;
+				measureType = firstType;
+			}
+			output = self.w1BusFamily_[family].measures[measureType].pattern.exec(data);
+
+			if (output) {
+				var value = output[1] * self.w1BusFamily_[family].measures.temperature.scale;	
+			 	var result = {
+			 		timestamp: Date.now(),
+			 		value: value
+			 	};
+	  			deferred.resolve({err:null, result:result});
+			}
+			else{
+				deferred.reject(new Error('Can not read temperature for sensor ' + sensorID));
+			}
+		}
+	});
+    return deferred.promise;
 };
+
+
+
 

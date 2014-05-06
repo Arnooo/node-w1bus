@@ -1,8 +1,12 @@
-test:
-	./node_modules/.bin/mocha --reporter spec ./test/test
+simu:
+	./node_modules/.bin/mocha --reporter spec \
+	./test/test \
+	./test/simu
 
 live:
-	./node_modules/.bin/mocha --reporter spec ./test/live
+	./node_modules/.bin/mocha --reporter spec \
+	./test/test \
+	./test/live
 
-.PHONY: test
+.PHONY: simu
 .PHONY: live

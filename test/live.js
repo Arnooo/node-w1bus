@@ -2,17 +2,8 @@ var assert = require("assert"),
     w1bus = require("../w1bus");
 
 //--------------------------------------------------------------------------------
-// test cases - testing for success
+// test cases - real sensor request
 //
-describe('W1bus', function(){
-  describe('#create()', function(){
-    it('should return an object!', function(){
-        var bus = w1bus.create();
-        assert.equal("object", typeof(bus));
-    });
-  });
-});
-
 describe('W1bus', function(){
   describe('#listAllSensors()', function(){
     it('should be a list with at least one sensor ID!', function(done){
@@ -29,7 +20,7 @@ describe('W1bus', function(){
             }
         })
         .catch(function(err){
-            assert.equal(-1, err.err.errno);
+            assert.equal(-1, err.errno);
             done();
         })    
         .done(null, done);
@@ -56,6 +47,7 @@ describe('W1bus', function(){
                         assert.ok(!isNaN(res.result.timestamp));
                         assert.equal(typeof(1), typeof(res.result.timestamp));
                         assert.ok(res.result.timestamp > 0);
+                        console.log("Date = "+new Date(res.result.timestamp)+", Value = "+res.result.value);
 
                         done();
                     }
@@ -77,6 +69,32 @@ describe('W1bus', function(){
             assert.equal(-1, err.errno);
                 done();
         })
+        .done(null, done);
+    });
+  });
+});
+
+describe('W1bus', function(){
+  describe('#isConnected()', function(){
+    it('should be connected!', function(done){
+        var bus = w1bus.create();
+        bus.listAllSensors()
+        .then(function(data){
+            console.log("Check connection for sensor "+data.ids[0]);
+            bus.isConnected(data.ids[0])
+            .then(function(data){
+                assert.ok(data.connected, data.err);
+                done();
+            })
+            .catch(function(err){
+                assert.equal(-1, err.errno);
+                done();
+            });
+        })
+        .catch(function(err){
+            assert.equal(-1, err.errno);
+            done();
+        })    
         .done(null, done);
     });
   });
