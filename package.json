@@ -33,7 +33,7 @@
         "url": "https://github.com/Arnooo/node-w1bus/issues"
     },
     "scripts": {
-      "test": "make test"
+      "test": "make simu"
     },
     "devDependencies": {
         "mocha": ">= 1.18.2"
