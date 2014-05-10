@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Arnooo/node-w1bus.svg?branch=master)](https://travis-ci.org/Arnooo/node-w1bus)
+
 node-w1bus
 ===============
 
