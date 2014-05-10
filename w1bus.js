@@ -1,5 +1,5 @@
 /*!
- * Monitoring
+ * W1Bus
  * Copyright(c) 2014 Arnaud Jouobel <arnaud.joubel@gmail.com>
  * MIT Licensed
  */
