@@ -1,4 +1,6 @@
+[![npm version](https://badge.fury.io/js/node-w1bus.svg)](https://badge.fury.io/js/node-w1bus)
 [![Build Status](https://travis-ci.org/Arnooo/node-w1bus.svg?branch=master)](https://travis-ci.org/Arnooo/node-w1bus)
+[![NPM Downloads](https://img.shields.io/npm/dm/node-w1bus.svg)](https://www.npmjs.com/package/node-w1bus)
 
 node-w1bus
 ===============
