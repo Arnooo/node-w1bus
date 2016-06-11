@@ -35,6 +35,7 @@ Sensor's Configuration schema:
 
 How to instanciate a 1 wire bus object:
 
+    var w1bus = require('node-w1bus');
     var bus = w1bus.create();
 
 How to get 1 wire bus configuration with all sensors and measures available:
