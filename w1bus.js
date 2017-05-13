@@ -60,7 +60,7 @@ function W1bus () {
 			measures:{
 				temperature: {
 					description: "Temperature",
-					pattern: /t=(\d+)/,
+					pattern: /t=(-?\d+)/,
 					unit:"°C",
 					scale: 0.001
 				}
@@ -71,7 +71,7 @@ function W1bus () {
 			measures:{
 				temperature: {
 					description: "Temperature",
-					pattern: /t=(\d+)/,
+					pattern: /t=(-?\d+)/,
 					unit:"°C",
 					scale: 0.001
 				}
@@ -82,7 +82,7 @@ function W1bus () {
 			measures:{
 				temperature: {
 					description: "Temperature",
-					pattern: /t=(\d+)/,
+					pattern: /t=(-?\d+)/,
 					unit:"°C",
 					scale: 0.001
 				}
